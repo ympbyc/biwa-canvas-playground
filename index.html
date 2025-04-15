@@ -7,13 +7,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet"
           href="https://ympbyc.github.io/shortblog/blog/style.css" />
-    <script src="lib/biwascheme-0.8.0.js"></script>
+    <script src="lib/biwascheme-0.7.5.js"></script>
     <script type="text/biwascheme">
       (load "./lib/pieces-biwa.scm")
-      (load "./lib/o-hiroma.scm")
+      (load "o-hiroma.scm")
     </script>
   </head>
   <body class="body-compact">
-    <canvas id="main-canvas"></canvas>
+    <canvas id="main-canvas" width="640" height="320"></canvas>
+    <div id="bs-console"></div>
   </body>
 </html>

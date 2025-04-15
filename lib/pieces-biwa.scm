@@ -61,6 +61,12 @@
 ;;;;;;;;;;;;;;;;;;;;
 (print "loading js interface")
 
+(define (falsy? x)
+  (or (js-undefined? x)
+      (js-null? x)
+      (null? x)
+      (not x)))
+
 ;; <o> eye: lousy ref
 (define(<o> field obj)
   (let1 res (cond ((pair? obj)
@@ -77,7 +83,14 @@
 
 ;; shorthand for js-invoke
 (define-macro (: obj method . args)
-  `(js-invoke ,obj ,method ,@args))
+  `(js-invoke ,obj
+	      ,(cond ((and (list? method)
+			   (eq? 'quote (car method)))
+		      (symbol->string (cadr method)))
+		     ((symbol? method)
+		      (symbol->string (cadr method)))
+		     (#t method))
+	      ,@args))
 
 ;; load js symbols into toplevel
 (define-macro (import-js-symbols . syms)
@@ -108,7 +121,7 @@
   `(js-close (lambda ,params ,@body)))
 
 
-(import-js-symbols biwa_interpreter)
+(define biwa_interpreter (js-new (<o> 'Interpreter BiwaScheme)))
 (define (biwa-log x)
   (console-log x)
   (: biwa_interpreter 'log x)
@@ -151,13 +164,6 @@
                         '("testing" "html" "generation"))))))
 (define-macro (json x)
   `(: JSON 'stringify ,x))
-
-
-(define (falsy? x)
-  (or (js-undefined? x)
-      (js-null? x)
-      (null? x)
-      (not x)))
 
 
 (define (comp<o> . xs)
